@@ -3,7 +3,7 @@ var app = express();
 var cron = require('node-cron');
 
 require('dotenv').config();
-const TronWeb = require('TronWeb');
+const TronWeb = require('tronweb');
 const HttpProvider = TronWeb.providers.HttpProvider;
 const fullNode = new HttpProvider("https://api.shasta.trongrid.io"); // Full node http endpoint
 const solidityNode = new HttpProvider("https://api.shasta.trongrid.io"); // Solidity node http endpoint
