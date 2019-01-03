@@ -58,16 +58,20 @@ contract Betting is Owned {
         commissionRecipient = _commissionRecipient;
     }
 
+    function tokenAddress() public view returns(address) {
+        return token;
+    }
+
     function commissionRecipientAddress() public view returns(address) {
         return commissionRecipient;
     }
 
-    function getBetters(uint256 _index) returns (uint256 upCount, uint256 downCount, address[] addressUp, address[] addressDown) {
+    function getBetters(uint256 _index) public view returns (uint256 upCount, uint256 downCount, address[] addressUp, address[] addressDown) {
         return (bettingStorage[_index].addressUp.length, bettingStorage[_index].addressDown.length, bettingStorage[_index].addressUp, bettingStorage[_index].addressDown);
 
     }
 
-    function getBetting(uint256 _index)
+    function getBetting(uint256 _index) public view
         returns(uint rate,
                 uint endRate,
                 uint endTimestamp,

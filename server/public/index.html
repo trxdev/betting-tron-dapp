@@ -127,17 +127,17 @@
                                 <div class="betAmount">
                                     <p class="label">Choose a bet amount</p>
                                     <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-                                        <label class="btn btn-secondary active w-100">
-                                            <input type="radio" name="amount" value="100" autocomplete="off" checked>100<br>MOOD
+                                        <label class="btn btn-secondary active w-100"  onclick=" rebuildPeoples(0);">
+                                            <input type="radio" class="amount" name="amount" value="0" autocomplete="off" checked>100<br>MOOD
                                         </label>
-                                        <label class="btn btn-secondary w-100">
-                                            <input type="radio" name="amount" value="500" autocomplete="off">500<br>MOOD
+                                        <label class="btn btn-secondary w-100"  onclick=" rebuildPeoples(1);">
+                                            <input type="radio" class="amount" name="amount" value="1" autocomplete="off">1000<br>MOOD
                                         </label>
-                                        <label class="btn btn-secondary w-100">
-                                            <input type="radio" name="amount" value="1000" autocomplete="off">1000<br>MOOD
+                                        <label class="btn btn-secondary w-100"  onclick=" rebuildPeoples(2);">
+                                            <input type="radio" class="amount" name="amount" value="2" autocomplete="off">5000<br>MOOD
                                         </label>
-                                        <label class="btn btn-secondary w-100">
-                                            <input type="radio" name="amount" value="2000" autocomplete="off">2000<br>MOOD
+                                        <label class="btn btn-secondary w-100"  onclick=" rebuildPeoples(3);">
+                                            <input type="radio"  class="amount" name="amount" value="3" autocomplete="off">10000<br>MOOD
                                         </label>
                                     </div>
                                 </div>
@@ -147,12 +147,12 @@
                                         <div class="rate up" style="width: 63%;">
                                     <span class="symbol">
                                         <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                    </span>10
+                                    </span>-
                                         </div>
                                         <div class="rate down" style="width: 37%;">
                                     <span class="symbol">
                                         <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                    </span>5
+                                    </span>-
                                         </div>
                                     </div>
                                 </div>

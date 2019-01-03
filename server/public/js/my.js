@@ -4,43 +4,49 @@ var serverTime = 0,
     sliceInterval = '',
     intervalID = null,
     prices = {},
-    bettingAddress = '';
+    bettingAddress = '',
+    curentTx = 0,
+    curentTxWithAmount = 0;
 var utils = '';
-var server = 'http://159.65.88.52'
-endpoint = '/api/bettings/active',
+var server = 'http://159.65.88.52';
+endpoint = '/api/bettings/active';
 contracrsEndpoint = '/api/contracts';
+var bettingContract;
+var tokenContract;
+var defaultAddress;
+var tokenBalance;
 
-async function componentDidMount() {
-    await new Promise(resolve => {
-        const tronWebState = {
-            installed: !!window.tronWeb,
-            loggedIn: window.tronWeb && window.tronWeb.ready
-        };
+function initTronWeb() {
+    if (!!window.tronWeb && window.tronWeb.ready){
+        console.log('tronweb ready')
+        contractInit();
+    } else {
+        setTimeout(initTronWeb, 500);
+    }
+}
+async function contractInit() {
+    bettingContract = await tronWeb.contract().at('TAUqhvSZeygnvxYw6BAwNMLBai7YMQyHWj');
+    tokenContract = await tronWeb.contract().at('TRNzmqvDzKZbMQuxNb55aRJacDkc5H8To9');
+    defaultAddress = tronWeb.defaultAddress.base58;
+    tokenBalance = (await tokenContract.balanceOf(defaultAddress).call({
+        shouldPollResponse: true,
+        callValue: 0})).balance.toNumber() / 100;
+    console.log('address='+defaultAddress);
+    console.log('token balance='+tokenBalance);
+}
+setTimeout(initTronWeb, 500);
 
-        if(tronWebState.installed) {
-            this.setState({
-                tronWeb:
-                tronWebState
-            });
-
-            return resolve();
-        }
-    });
-};
-
-$(async function () {
-    await componentDidMount();
-    getContractsData();
-
-    utils = {
-        tronWeb: false,
-        contract: false,
-        async setTronWeb(tronWeb) {
-            this.tronWeb = tronWeb;
-            this.contract = await tronWeb.contract().at(bettingAddress)
-        },
-    };
-})
+async function rebuildPeoples(value) {
+    console.log(value);
+    if (value == null)
+        value = $('input[name=amount]:checked').val();
+    curentTxWithAmount = curentTx + value;
+    let bets = await bettingContract.getBetters(curentTxWithAmount).call({
+        shouldPollResponse: true,
+        callValue: 0});
+    console.log(bets);
+    console.log('curentTxWithAmount='+curentTxWithAmount);
+}
 
 $(function () {
 
@@ -161,18 +167,22 @@ function getContractsData() {
 }
 
 function processPrices(data) {
+
     if (Array.isArray(data)) {
         data.forEach(function (item, index) {
             prices[item.duration] = {price: item.price, tx: item.tx};
         });
+        curentTx = prices[sliceInterval].tx;
         $('.endPrice .timerData .amount').html(Number.parseFloat(prices[sliceInterval].price).toFixed(6));
         let txInput = $('.endPrice .timerData [name="tx"]');
         if (txInput.length > 0) {
             txInput.val(prices[sliceInterval].tx);
+
         } else {
             $('.endPrice .timerData').append('<input type="hidden" name="tx" value="'+prices[sliceInterval].tx+'">');
         }
     }
+    rebuildPeoples();
 }
 
 function processServerTime(time) {

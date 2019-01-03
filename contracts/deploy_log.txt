@@ -1,21 +1,23 @@
+Using network 'shasta'.
+
 Running migration: 1_initial_migration.js
   Replacing Migrations...
   Migrations:
-    (base58) TNARYJip4yns1MvDyo7dXP6aQP3fr9wrAp
-    (hex) 4185c08d430b0898dcbd0e7757b2ced619af81ae5c
+    (base58) TXQuQHMh79qGiTQKad6TQCq9aUWXinykKF
+    (hex) 41eb36c3db8abfea4425d03e47f1f50c52ac320aed
 Saving successful migration to network...
 Saving artifacts...
 Running migration: 2_deploy_contracts.js
   Running step...
   Replacing MoodToken...
   MoodToken:
-    (base58) TMRyM1xpbMbZ5eKrHbVJFRYdrXnQPjW3B1
-    (hex) 417db9371924a03b5f24df9a6a242b28fac2ec26f9
+    (base58) TRNzmqvDzKZbMQuxNb55aRJacDkc5H8To9
+    (hex) 41a909a99d02590a24156625c90f95454a955181fc
   Replacing Betting...
   Betting:
-    (base58) TC4U5VeRmQ6pAss6fH6E2Btf6pqjKp1Lnx
-    (hex) 4116eeeaa5651dc0ff7b3c6fabd47defcf9d2d302e
-TOKEN =417db9371924a03b5f24df9a6a242b28fac2ec26f9
-BETTING =4116eeeaa5651dc0ff7b3c6fabd47defcf9d2d302e
+    (base58) TAUqhvSZeygnvxYw6BAwNMLBai7YMQyHWj
+    (hex) 41059ab3c9c179fdb4a97b0eaacf54a3ed37f2de0b
+TOKEN =41a909a99d02590a24156625c90f95454a955181fc
+BETTING =41059ab3c9c179fdb4a97b0eaacf54a3ed37f2de0b
 Saving successful migration to network...
 Saving artifacts...
