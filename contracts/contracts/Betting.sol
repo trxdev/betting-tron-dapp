@@ -57,9 +57,33 @@ contract Betting is Owned {
         token = IERC20(_tokenAddress);
         commissionRecipient = _commissionRecipient;
     }
+
     function commissionRecipientAddress() public view returns(address) {
         return commissionRecipient;
     }
+
+    function getBetters(uint256 _index) returns (uint256 upCount, uint256 downCount, address[] addressUp, address[] addressDown) {
+        return (bettingStorage[_index].addressUp.length, bettingStorage[_index].addressDown.length, bettingStorage[_index].addressUp, bettingStorage[_index].addressDown);
+
+    }
+
+    function getBetting(uint256 _index)
+        returns(uint rate,
+                uint endRate,
+                uint endTimestamp,
+                uint bet,
+                uint sum,
+                uint result,
+                uint winBet) {
+        return (bettingStorage[_index].rate,
+                bettingStorage[_index].endRate,
+                bettingStorage[_index].endTimestamp,
+                bettingStorage[_index].bet,
+                bettingStorage[_index].sum,
+                bettingStorage[_index].result,
+                bettingStorage[_index].winBet);
+    }
+
     function createBetting(uint rate, uint endTimestamp) onlyOwner public returns(uint256) {
         Betting memory betting;
         betting.rate = rate;

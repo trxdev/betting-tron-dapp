@@ -18,7 +18,10 @@ const tronWeb = new TronWeb(
     privateKey
 );
 const contractAbi = '[{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"bettingStorage","outputs":[{"name":"rate","type":"uint256"},{"name":"endRate","type":"uint256"},{"name":"endTimestamp","type":"uint256"},{"name":"ended","type":"bool"},{"name":"bet","type":"uint256"},{"name":"sum","type":"uint256"},{"name":"result","type":"uint256"},{"name":"winBet","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_tokenAddress","type":"address"},{"name":"_commissionRecipient","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"rate","type":"uint256"},{"indexed":false,"name":"endTimestamp","type":"uint256"},{"indexed":false,"name":"bet","type":"uint256"}],"name":"BettingStarted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"endRate","type":"uint256"},{"indexed":false,"name":"direction","type":"uint256"},{"indexed":false,"name":"winBet","type":"uint256"}],"name":"BettingEnd","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"direction","type":"uint256"},{"indexed":false,"name":"addr","type":"address"}],"name":"Bet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"add","type":"address"},{"indexed":false,"name":"winBet","type":"uint256"}],"name":"Reward","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":true,"inputs":[],"name":"commissionRecipientAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"rate","type":"uint256"},{"name":"endTimestamp","type":"uint256"}],"name":"createBetting","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"index","type":"uint256"},{"name":"endRate","type":"uint256"}],"name":"endBetting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"index","type":"uint256"},{"name":"direction","type":"uint256"}],"name":"createBet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
-const contractAddress = 'TLYAYoMKuXA9XbjuEK6i67j2PhdoGDC1GW';
+const contractAddress = 'TC4U5VeRmQ6pAss6fH6E2Btf6pqjKp1Lnx';
+const tokenAbi = '';
+const tokenAddress = 'TMRyM1xpbMbZ5eKrHbVJFRYdrXnQPjW3B1';
+
 const bettingContract = tronWeb.contract(JSON.parse(contractAbi), contractAddress);
 
 var request = require('sync-request');
@@ -222,6 +225,15 @@ app.get('/api/bettings/active', function (req, res) {
         }
     }
     res.send(JSON.stringify(bets));
+});
+
+app.get('/api/contracts', function (req, res) {
+    let contracts = { bettingAbi: contractAbi,
+                      bettingAddress: contractAddress,
+                      tokenAbi: tokenAbi,
+                      tokenAddress: tokenAddress
+                    };
+    res.send(JSON.stringify(contracts))
 });
 /*app.get('/', async function (req, res) {
     res.send('');
