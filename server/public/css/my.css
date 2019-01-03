@@ -341,6 +341,26 @@ body {
     margin-top: 120px;
 }
 
-.winnings [class^=col] {
+.winnings {
+    margin-top: 10px;
+}
+
+.winnings .cont {
     padding: 45px 50px;
+    color: #000;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+.winnings div:not(:last-child) {
+    border-right: 1px solid #DDDDDD;
+}
+
+.winnings .cont ol {
+    padding-left: 1.2rem;
+    line-height: 30px;
+}
+
+.winnings .label {
+    color: #888888;
 }
