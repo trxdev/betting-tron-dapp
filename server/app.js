@@ -85,6 +85,7 @@ function generateBet(startTime, type) {
     bet.endTimeStr = timeConverter(bet.endTime);
     bet.duration = type;
     bet.ended = false;
+    console.log('start='+preUrl);
     bet.price = (+klines[1]+(+klines[4])) / 2;
     bet.id = bet.startTimeStr + '_' + bet.duration;
     return bet;
@@ -92,14 +93,14 @@ function generateBet(startTime, type) {
 
 function getEndPrice(starTime, endTime, type){
     let interval = 0;
-    if (type == '15m') { interval = '30m'}
-    if (type == '1h') { interval = '2h' }
-    if (type == '4h') { interval = '8h'}
-    if (type == '1d') { interval = '3d' }
+    if (type == '15m') { interval = '15m'}
+    if (type == '1h') { interval = '1h' }
+    if (type == '4h') { interval = '4h'}
+    if (type == '1d') { interval = '1d' }
     if (interval == 0) return;
-    let preUrl = 'https://api.binance.com/api/v1/klines?symbol=TRXUSDT&interval='+interval+'&startTime='+starTime*1000+'&endTime='+endTime*1000;
+    let preUrl = 'https://api.binance.com/api/v1/klines?symbol=TRXUSDT&interval='+interval+'&startTime='+starTime*1000+'&endTime='+(endTime*1000-1);
     let response = request('GET', preUrl).getBody().toString();
-
+    console.log('end='+preUrl);
     let klines = JSON.parse(response)[0];
     return klines[4];
 }
