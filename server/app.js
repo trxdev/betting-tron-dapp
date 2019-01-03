@@ -207,12 +207,26 @@ cron.schedule('*/10 * * * * *', async () => {
     console.log('end task');
 
 });
-
+app.get('/api/bettings/active', function (req, res) {
+    const adapter = new FileSync('db/db.json');
+    const database = low(adapter);
+    database.defaults({ bets: [], init: false, startTime: 0 }).write();
+    let db = database.getState();
+    let bets = [];
+    for(let index in db.bets) {
+        let bet = db.bets[index];
+        if (bet.ended === false) {
+            bets.push(bet);
+        }
+    }
+    res.send(JSON.stringify(bets));
+});
 /*app.get('/', async function (req, res) {
     res.send('');
 });*/
+
 app.use(express.static('public'));
 
-app.listen(3000, function () {
-    console.log('Server run on 3000 port');
+app.listen(80, function () {
+    console.log('Server run on 80 port');
 });
