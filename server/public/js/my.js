@@ -12,12 +12,19 @@ var serverTime = 0,
     downCount = 0;
 var utils = '';
 var server = 'http://159.65.88.52';
-endpoint = '/api/bettings/active';
-contracrsEndpoint = '/api/contracts';
+var endpoint = '/api/bettings/active';
+var contracrsEndpoint = '/api/contracts';
 var bettingContract;
 var tokenContract;
 var defaultAddress;
 var tokenBalance;
+
+var bettingContractAddress = 'TK8cgvTGYGozwNV8egzDmbYbkE9UQw9hQJ';
+var eventServer = 'https://api.shasta.trongrid.io';
+var BetLogsUrl = eventServer + '/event/contract/' + bettingContractAddress + '/Bet?since=0&size=2000&page=1';
+var BetWinUrl =  eventServer +'/event/contract/' + bettingContractAddress + '/Reward?since=0&size=2000&page=1';
+
+
 function initTronWeb() {
     if (!!window.tronWeb && window.tronWeb.ready){
         console.log('tronweb ready')
@@ -27,7 +34,7 @@ function initTronWeb() {
     }
 }
 async function contractInit() {
-    bettingContract = await tronWeb.contract().at('TXTZG67XFLuRYnMPF8JvNvoVGmyZ1Z8EPu');
+    bettingContract = await tronWeb.contract().at(bettingContractAddress);
     tokenContract = await tronWeb.contract().at(await bettingContract.tokenAddress().call());
     defaultAddress = tronWeb.defaultAddress.base58;
     tokenBalance = (await tokenContract.balanceOf(defaultAddress).call({
@@ -39,7 +46,26 @@ async function contractInit() {
 
 }
 setTimeout(initTronWeb, 500);
-
+async function calcWin(index, price, direction, bet, time){
+    let bets = await bettingContract.getBetters(index).call({
+        shouldPollResponse: true,
+        callValue: 0
+    });
+    let upCount = bets.upCount.toNumber();
+    let downCount = bets.downCount.toNumber();
+    let sum = (upCount+downCount) * bet;
+    let win = 0;
+    let dir ='';
+    if (direction==1){
+        win = sum/upCount;
+        dir = '>';
+    } else {
+        dir = '<';
+        win = sum/downCount;
+    }
+    $('.ifWinList').append(` <li>You win ${win/100} MOOD if price ${dir} ${price} at ${new Date(time*1000).toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')}</li>`)
+    console.log(index);
+}
 async function rebuildPeoples(value) {
     if (value == 0){ currentAmount = 100 }
     if (value == 1){ currentAmount = 1000 }
@@ -59,7 +85,58 @@ async function rebuildPeoples(value) {
     $(".thirdPart").collapse('hide');
     $(".increase").removeClass('active');
     $(".fall").removeClass('active');
-
+    console.log(BetLogsUrl);
+    $.ajax({
+        url: BetLogsUrl,
+        cache: false,
+        success: function(json){
+            $('.ifWinList').html('');
+            $('.createBet').html('<p class="label">Create a bet</p>');
+            console.log(prices['1d'].tx);
+            for(let i=0;i<json.length;i++){
+                if (json[i].result.index - prices['1d'].tx >= 0 && json[i].result.index - prices['1d'].tx <= 3) {
+                    calcWin(json[i].result.index, prices['1d'].price, json[i].result.direction, json[i].result.bet, prices['1d'].endTime);
+                }
+                if (json[i].result.index - prices['4h'].tx >= 0 && json[i].result.index - prices['4h'].tx <= 3) {
+                    calcWin(json[i].result.index, prices['4h'].price, json[i].result.direction, json[i].result.bet, prices['4h'].endTime);
+                }
+                if (json[i].result.index - prices['1h'].tx >= 0 && json[i].result.index - prices['1h'].tx <= 3) {
+                    calcWin(json[i].result.index, prices['1h'].price, json[i].result.direction, json[i].result.bet, prices['1h'].endTime);
+                }
+                if (json[i].result.index - prices['15m'].tx >= 0 && json[i].result.index - prices['15m'].tx <= 3) {
+                    calcWin(json[i].result.index, prices['15m'].price, json[i].result.direction,json[i].result.bet, prices['15m'].endTime);
+                }
+                $('.createBet').append(`<div class="row">
+                                    <div class="col-7">
+                                        <span class="date">${new Date(json[i].block_timestamp).toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')}</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">${json[i].result.bet/100}</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>`);
+            }
+        }
+    });
+    $.ajax({
+        url: BetWinUrl,
+        cache: false,
+        success: function(json){
+            $('.completeBet').html('<p class="label">Complete bet</p>');
+            for(let i=0;i<json.length;i++){
+                console.log(json[i])
+                $('.completeBet').append(`<div class="row">
+                                    <div class="col-7">
+                                        <span class="date">${new Date(json[i].block_timestamp).toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')}</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">${json[i].result.winBet/100}</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>`);
+            }
+        }
+    });
     console.log('curentTxWithAmount=' + curentTxWithAmount);
 }
 
@@ -213,7 +290,7 @@ function processPrices(data) {
 
     if (Array.isArray(data)) {
         data.forEach(function (item, index) {
-            prices[item.duration] = {price: item.price, tx: item.tx};
+            prices[item.duration] = {price: item.price, tx: item.tx, endTime: item.endTime};
         });
         curentTx = prices[sliceInterval].tx;
         $('.endPrice .timerData .amount').html(Number.parseFloat(prices[sliceInterval].price).toFixed(6));
