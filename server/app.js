@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var cron = require('node-cron');
+var cors = require('cors')
 
 require('dotenv').config();
 const TronWeb = require('tronweb');
@@ -207,6 +208,7 @@ cron.schedule('*/10 * * * * *', async () => {
     console.log('end task');
 
 });
+app.use(cors())
 app.get('/api/bettings/active', function (req, res) {
     const adapter = new FileSync('db/db.json');
     const database = low(adapter);
