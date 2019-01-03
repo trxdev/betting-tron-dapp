@@ -3,9 +3,45 @@ var serverTime = 0,
     currencySymbol = 'TRXUSDT',
     sliceInterval = '',
     intervalID = null,
-    prices = {};
+    prices = {},
+    bettingAddress = '';
+var utils = '';
 var server = 'http://159.65.88.52'
-endpoint = '/api/bettings/active';
+endpoint = '/api/bettings/active',
+contracrsEndpoint = '/api/contracts';
+
+async function componentDidMount() {
+    await new Promise(resolve => {
+        const tronWebState = {
+            installed: !!window.tronWeb,
+            loggedIn: window.tronWeb && window.tronWeb.ready
+        };
+
+        if(tronWebState.installed) {
+            this.setState({
+                tronWeb:
+                tronWebState
+            });
+
+            return resolve();
+        }
+    });
+};
+
+$(async function () {
+    await componentDidMount();
+    getContractsData();
+
+    utils = {
+        tronWeb: false,
+        contract: false,
+        async setTronWeb(tronWeb) {
+            this.tronWeb = tronWeb;
+            this.contract = await tronWeb.contract().at(bettingAddress)
+        },
+    };
+})
+
 $(function () {
 
     timeSlice = +$('[name="time"]:checked').val();
@@ -110,8 +146,21 @@ function getPricesData() {
     });
 }
 
+function getContractsData() {
+    $.ajax({
+        url:server+contracrsEndpoint,
+        complete: function (response) {
+            bettingAddress = JSON.parse(response.responseText).bettingAddress;
+            utils.setTronWeb(tronWeb);
+            console.log(utils.contract);
+        },
+        error: function () {
+            console.log('Can\'t get server candlestick data!');
+        },
+    });
+}
+
 function processPrices(data) {
-    //prices
     if (Array.isArray(data)) {
         data.forEach(function (item, index) {
             prices[item.duration] = {price: item.price, tx: item.tx};
