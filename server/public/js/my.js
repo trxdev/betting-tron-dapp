@@ -2,7 +2,10 @@ var serverTime = 0,
     timeSlice = 0,
     currencySymbol = 'TRXUSDT',
     sliceInterval = '',
-    intervalID = null;
+    intervalID = null,
+    prices = {};
+var server = 'http://159.65.88.52'
+endpoint = '/api/bettings/active';
 $(function () {
 
     timeSlice = +$('[name="time"]:checked').val();
@@ -10,6 +13,7 @@ $(function () {
     currencySymbol = $('[name="currency"]:checked').val();
     getServerTime();
     getServerCandlestickData(currencySymbol, sliceInterval);
+    getPricesData();
 
     $('#priceBtn').change(function (e) { // show "place a bet" button when click "increase" of "fail" price button
         $(".winAmount").collapse('show');
@@ -39,6 +43,7 @@ $(function () {
         sliceInterval = getSliceInterval();
         getServerTime();
         getServerCandlestickData(currencySymbol,sliceInterval);
+        getPricesData();
     });
     $('#currSymbol').change(function (e) {
         currencySymbol = $('[name="currency"]:checked').val();
@@ -91,6 +96,34 @@ function getServerCandlestickData(symbol, interval) {
             console.log('Can\'t get server candlestick data!');
         },
     });
+}
+
+function getPricesData() {
+    $.ajax({
+        url:server+endpoint,
+        complete: function (response) {
+            processPrices(JSON.parse(response.responseText));
+        },
+        error: function () {
+            console.log('Can\'t get server candlestick data!');
+        },
+    });
+}
+
+function processPrices(data) {
+    //prices
+    if (Array.isArray(data)) {
+        data.forEach(function (item, index) {
+            prices[item.duration] = {price: item.price, tx: item.tx};
+        });
+        $('.endPrice .timerData .amount').html(Number.parseFloat(prices[sliceInterval].price).toFixed(6));
+        let txInput = $('.endPrice .timerData [name="tx"]');
+        if (txInput.length > 0) {
+            txInput.val(prices[sliceInterval].tx);
+        } else {
+            $('.endPrice .timerData').append('<input type="hidden" name="tx" value="'+prices[sliceInterval].tx+'">');
+        }
+    }
 }
 
 function processServerTime(time) {
