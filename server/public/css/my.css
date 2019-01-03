@@ -1,0 +1,346 @@
+@font-face {
+    font-family: "Muli";
+    src: url(../fonts/Muli/Muli-Regular.ttf) format("truetype");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Muli";
+    src: url(../fonts/Muli/Muli-SemiBold.ttf) format("truetype");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "Muli";
+    src: url(../fonts/Muli/Muli-ExtraBold.ttf) format("truetype");
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: "Muli";
+    src: url(../fonts/Muli/Muli-ExtraLight.ttf) format("truetype");
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: "Muli";
+    src: url(../fonts/Muli/Muli-Bold.ttf) format("truetype");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "Muli";
+    src: url(../fonts/Muli/Muli-Light.ttf) format("truetype");
+    font-weight: 300;
+}
+
+body {
+    font-family: 'Muli', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #FFFFFF;
+    background-color: #F7F7F7;
+}
+
+.jqcandlestick-container {
+    width: 100%;
+    height: 80vh;
+    min-height: 480px;
+    background: #FFFFFF;
+}
+
+.label {
+    font-weight: 500;
+}
+
+#nav-tabContent {
+    padding: 2.5rem 0;
+}
+
+#nav-create-a-bet {
+    text-align: center;
+}
+
+#nav-history .label {
+    opacity: .5;
+}
+
+#nav-history .row {
+    margin-bottom: .625rem;
+    font-size: 16px;
+}
+
+.rightContent {
+    padding: 0 2.5rem;
+}
+
+.rightContent>div:not(:first-child) {
+    margin-top: 1.8rem;
+}
+
+.rightContent.firstPart {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.rightContent.secondPart {
+    padding-top: 1.625rem;
+}
+
+.rightContent.thirdPart {
+    margin-top: 1.25rem;
+    padding-top: 1.875rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.rightContent.thirdPart .betAccepted {
+    display: none;
+    font-size: 24px;
+    text-align: center;
+    margin: 1.75rem 0 1.5rem;
+}
+
+.endTimer .label {
+    margin-bottom: .5rem;
+}
+
+.endPrice .currencies {
+    margin: 0;
+    font-size: 18px;
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+.rightBlock {
+    background-color: #345F92;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-tabs .nav-link {
+    border:none;
+    color: #fff;
+    opacity: 0.5;
+    text-align: center;
+    padding: 1.25rem 0;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.nav-tabs .nav-link.active {
+    opacity: 1;
+    border-bottom: 4px solid #4277FF;
+    background-color: transparent;
+    color: #fff;
+}
+
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:active {
+    opacity: 1;
+}
+
+.timerData, .rates {
+    font-size: 30px;
+}
+
+.rates .rate.up {
+    border-bottom: 4px solid #26A69A;
+}
+
+.rates .rate.down {
+    border-bottom: 4px solid #EF5350;
+}
+
+.rates .rate.up .symbol {
+    color: #26A69A;
+}
+
+.rates .rate.down .symbol {
+    color: #EF5350;
+}
+
+.rightBlock .btn-group .btn {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    padding: .3125rem 0;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.rightBlock .btn-group .btn.active {
+    background: #4277FF;
+    border-color: #4277FF;
+}
+
+.rightBlock .btn-group .btn:hover,
+.rightBlock .btn-group .btn:focus,
+.rightBlock .btn-group .btn:active,
+.rightBlock .btn-group .btn.active,
+.rightBlock .btn-group .btn.focus {
+    background: #4277FF;
+    border-color: #4277FF;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.rightBlock .btn-group .btn:not(:last-child) {
+    margin-right: .625rem;
+}
+
+.forecast .btn-group .btn {
+    padding: 1rem 0;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.forecast .btn-group .btn.increase:hover,
+.forecast .btn-group .btn.increase:focus,
+.forecast .btn-group .btn.increase:active,
+.forecast .btn-group .btn.increase.active,
+.forecast .btn-group .btn.increase.focus {
+    background-color: #26A69A;
+    border-color: #26A69A;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.forecast .btn-group .btn.fall:hover,
+.forecast .btn-group .btn.fall:focus,
+.forecast .btn-group .btn.fall:active,
+.forecast .btn-group .btn.fall.active,
+.forecast .btn-group .btn.fall.focus {
+    background-color: #EF5350;
+    border-color: #EF5350;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.betAmount .btn {
+    white-space: normal;
+}
+
+.winAmount .content .amount {
+    font-size: 30px;
+    line-height: normal;
+}
+
+.placeABet .btn {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 1rem;
+    background: #4277FF;
+    border-color: #4277FF;
+}
+
+.placeABet .btn:hover,
+.placeABet .btn:focus,
+.placeABet .btn:active,
+.placeABet .btn.active,
+.placeABet .btn.focus {
+    background: #1d5cff;
+    border-color: #1d5cff;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.placeABet .btn:disabled {
+    background: #265081;
+    border-color: #265081;
+}
+
+.chartTab {
+    margin-bottom: .625rem;
+}
+
+.chartTab .btn-group .btn {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    font-size: 12px;
+    padding: 1.0625rem 0;
+    color: #000;
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+
+}
+
+.chartTab .btn-group .btn.active,
+.chartTab .btn-group .btn.focus,
+.chartTab .btn-group .btn:hover,
+.chartTab .btn-group .btn:focus,
+.chartTab .btn-group .btn:active {
+    background: #4277FF;
+    border-color: #4277FF;
+    color: #FFFFFF;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.chartTab .btn-group {
+    max-width: 350px;
+}
+
+.chartTab .btn-group:not(:last-child) {
+    margin-right: 1.25rem;
+}
+
+.chartTab .btn-group .btn:not(:last-child) {
+    margin-right: 1.25rem;
+}
+
+.winAmount .label {
+    margin-bottom: .4375rem;
+}
+
+.winAmount .commission {
+    margin-top: .5rem;
+}
+
+.winAmount .terms {
+    margin-top: 1.25rem;
+}
+
+.placeABet .custom-control {
+    margin-bottom: 1.875rem;
+}
+
+.placeABet .custom-control-label::before {
+    background-color: #fff;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.placeABet .custom-control-label {
+    cursor: pointer;
+}
+
+.placeABet .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+    background-color: #26A69A;
+}
+
+.leftSide {
+    padding-left: 30px;
+}
+
+.timeSliceSwitch {
+    margin-top: 120px;
+}
+
+.winnings [class^=col] {
+    padding: 45px 50px;
+}

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MoodToken</title>
+    <meta charset="UTF-8">
+
+    <!--vendor scripts-->
+    <script type="text/javascript" src="vendor/jQuery/js/jquery.min.js"></script>
+    <script type="text/javascript" src="vendor/plotly/plotly-latest.min.js"></script>
+    <script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--vendor scripts-->
+
+    <!--vendor styles-->
+    <link rel="stylesheet" href="vendor/jQuery/css/jquerysctipttop.css" type="text/css">
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--vendor styles-->
+
+    <!--custom scripts-->
+    <script type="text/javascript" src="js/my.js"></script>
+    <!--custom scripts-->
+
+    <!--custom styles-->
+    <link rel="stylesheet" href="css/my.css">
+    <!--custom styles-->
+
+</head>
+<body>
+
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <a class="navbar-brand" href="#">WebApp</a>
+            </div>
+        </div>
+    </div>
+</nav>-->
+<div class="container-fluid pr-0">
+    <div class="row">
+        <div class="col-12 col-lg-8 leftSide">
+            <div class="w-100 d-flex justify-content-between chartTab timeSliceSwitch">
+                <div class="btn-group btn-group-toggle w-100" data-toggle="buttons" id="currSymbol">
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="currency" value="BTCUSD" autocomplete="off">btc
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="currency" value="ETCUSD" autocomplete="off">etc
+                    </label>
+                    <label class="btn btn-secondary active w-100">
+                        <input type="radio" name="currency" value="TRXUSDT" autocomplete="off" checked>trx
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="currency" value="XRPUSD" autocomplete="off">xrp
+                    </label>
+                </div>
+                <div class="btn-group btn-group-toggle w-100" data-toggle="buttons" id="timeline">
+                    <label class="btn btn-secondary active w-100">
+                        <input type="radio" name="time" value="86400000" autocomplete="off" checked>day
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="time" value="14400000" autocomplete="off">4 hours
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="time" value="3600000" autocomplete="off">1 hour
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="time" value="900000" autocomplete="off">15 min
+                    </label>
+                </div>
+            </div>
+            <div id="plotly-div"></div>
+            <div class="winnings row">
+                <div class="col-12 col-md-6">
+
+                </div>
+                <div class="col-12 col-md-6">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="rightBlock">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link w-50 active" id="nav-create-a-bet-tab" data-toggle="tab" href="#nav-create-a-bet" role="tab" aria-controls="nav-create-a-bet" aria-selected="true">Create a bet</a>
+                        <a class="nav-item nav-link w-50" id="nav-history-tab" data-toggle="tab" href="#nav-history" role="tab" aria-controls="nav-history" aria-selected="false">History</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-create-a-bet" role="tabpanel" aria-labelledby="nav-create-a-bet-tab">
+                        <form action="" id="makeABet">
+                            <div class="firstPart rightContent">
+                                <div class="endTimer">
+                                    <p class="label">Until the end of the bet left</p>
+                                    <p class="timerData">
+                                        <span class="hours"></span>:<span class="minutes"></span>:<span class="seconds"></span>
+                                    </p>
+                                </div>
+                                <div class="endPrice">
+                                    <p class="label">Will the price be higher or lower this level?</p>
+                                    <p class="currencies">BTC / USD</p>
+                                    <p class="timerData"><span class="currency">$</span>3458.83</p>
+                                </div>
+                                <div class="betAmount">
+                                    <p class="label">Choose a bet amount</p>
+                                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                                        <label class="btn btn-secondary active w-100">
+                                            <input type="radio" name="amount" value="100" autocomplete="off" checked>100<br>MOOD
+                                        </label>
+                                        <label class="btn btn-secondary w-100">
+                                            <input type="radio" name="amount" value="500" autocomplete="off">500<br>MOOD
+                                        </label>
+                                        <label class="btn btn-secondary w-100">
+                                            <input type="radio" name="amount" value="1000" autocomplete="off">1000<br>MOOD
+                                        </label>
+                                        <label class="btn btn-secondary w-100">
+                                            <input type="radio" name="amount" value="2000" autocomplete="off">2000<br>MOOD
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="ratesOfPartisipants">
+                                    <p class="label">For this time MOOD of people look like:</p>
+                                    <div class="d-flex w-100 text-center rates">
+                                        <div class="rate up" style="width: 63%;">
+                                    <span class="symbol">
+                                        <i class="fa fa-angle-up" aria-hidden="true"></i>
+                                    </span>10
+                                        </div>
+                                        <div class="rate down" style="width: 37%;">
+                                    <span class="symbol">
+                                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                    </span>5
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="secondPart rightContent">
+                                <div class="forecast">
+                                    <p class="label">Place your MOOD.  Price will:</p>
+                                    <div class="btn-group btn-group-toggle w-100" data-toggle="buttons" id="priceBtn">
+                                        <label class="btn btn-secondary w-100 increase">
+                                            <input type="radio" name="price" value="1" autocomplete="off">Will increase
+                                        </label>
+                                        <label class="btn btn-secondary w-100 fall">
+                                            <input type="radio" name="price" value="2" autocomplete="off">Will fall
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="winAmount collapse">
+                                    <p class="label">Your can get:</p>
+                                    <div class="content">
+                                        <div class="amount">
+                                            <span class="number">2900</span>
+                                            <span class="currency">MOOD</span>*
+                                        </div>
+                                        <div class="commission">
+                                            <span class="percentage">10</span>% service fee
+                                        </div>
+                                        <div class="terms">
+                                        <span class="termsText">
+                                            Award can change depends of numbers of playrs
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="thirdPart rightContent collapse">
+                                <div class="placeABet">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="termsAccept" name="termsAccepted">
+                                        <label class="custom-control-label" for="termsAccept">*Award can change depends of numbers of playrs</label>
+                                    </div>
+                                    <button class="btn btn-block btn-primary btn-lg" type="submit" id="placeABet" disabled="disabled">
+                                        Place a bet
+                                    </button>
+                                </div>
+                                <div class="betAccepted">
+                                    Thank you!<br>Bet accepted.
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
+                        <div class="rightContent">
+                            <div class="createBet">
+                                <p class="label">Create a bet</p>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="completeBet">
+                                <p class="label">Complete bet</p>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <span class="date">26.09.2018 20:30</span>
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="amount">100</span>
+                                        <span class="currency">MOOD</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
