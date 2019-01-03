@@ -144,15 +144,15 @@
                                 <div class="ratesOfPartisipants">
                                     <p class="label">For this time MOOD of people look like:</p>
                                     <div class="d-flex w-100 text-center rates">
-                                        <div class="rate up" style="width: 63%;">
+                                        <div class="rate up" style="width: 50%;">
                                     <span class="symbol">
                                         <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                    </span>-
+                                    </span><span id="upCount">-</span>
                                         </div>
-                                        <div class="rate down" style="width: 37%;">
+                                        <div class="rate down" style="width: 50%;">
                                     <span class="symbol">
                                         <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                    </span>-
+                                    </span><span id="downCount">-</span>
                                         </div>
                                     </div>
                                 </div>
@@ -162,10 +162,10 @@
                                     <p class="label">Place your MOOD.  Price will:</p>
                                     <div class="btn-group btn-group-toggle w-100" data-toggle="buttons" id="priceBtn">
                                         <label class="btn btn-secondary w-100 increase">
-                                            <input type="radio" name="price" value="1" autocomplete="off">Will increase
+                                            <input type="radio" class='direction' name="direction" value="1" autocomplete="off">Will increase
                                         </label>
                                         <label class="btn btn-secondary w-100 fall">
-                                            <input type="radio" name="price" value="2" autocomplete="off">Will fall
+                                            <input type="radio" class='direction'  name="direction" value="2" autocomplete="off">Will fall
                                         </label>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
                                     <p class="label">Your can get:</p>
                                     <div class="content">
                                         <div class="amount">
-                                            <span class="number">2900</span>
+                                            <span class="number" id="winAmountMood">--</span>
                                             <span class="currency">MOOD</span>*
                                         </div>
                                         <div class="commission">
@@ -198,7 +198,7 @@
                                     </button>
                                 </div>
                                 <div class="betAccepted">
-                                    Thank you!<br>Bet accepted.
+                                    Thank you!<br>Please confirm bet from tronlink popup
                                 </div>
                             </div>
                         </form>

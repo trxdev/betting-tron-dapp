@@ -6,7 +6,10 @@ var serverTime = 0,
     prices = {},
     bettingAddress = '',
     curentTx = 0,
-    curentTxWithAmount = 0;
+    curentTxWithAmount = 0,
+    currentAmount = 0,
+    upCount = 0,
+    downCount = 0;
 var utils = '';
 var server = 'http://159.65.88.52';
 endpoint = '/api/bettings/active';
@@ -15,7 +18,6 @@ var bettingContract;
 var tokenContract;
 var defaultAddress;
 var tokenBalance;
-
 function initTronWeb() {
     if (!!window.tronWeb && window.tronWeb.ready){
         console.log('tronweb ready')
@@ -26,26 +28,57 @@ function initTronWeb() {
 }
 async function contractInit() {
     bettingContract = await tronWeb.contract().at('TAUqhvSZeygnvxYw6BAwNMLBai7YMQyHWj');
-    tokenContract = await tronWeb.contract().at('TRNzmqvDzKZbMQuxNb55aRJacDkc5H8To9');
+    tokenContract = await tronWeb.contract().at(await bettingContract.tokenAddress().call());
     defaultAddress = tronWeb.defaultAddress.base58;
     tokenBalance = (await tokenContract.balanceOf(defaultAddress).call({
         shouldPollResponse: true,
         callValue: 0})).balance.toNumber() / 100;
-    console.log('address='+defaultAddress);
-    console.log('token balance='+tokenBalance);
+    console.log('address=' + defaultAddress);
+    console.log('token balance=' + tokenBalance);
+    await rebuildPeoples($('input[name=amount]:checked').val())
 }
 setTimeout(initTronWeb, 500);
 
 async function rebuildPeoples(value) {
-    console.log(value);
-    if (value == null)
-        value = $('input[name=amount]:checked').val();
-    curentTxWithAmount = curentTx + value;
+    if (value == 0){ currentAmount = 100 }
+    if (value == 1){ currentAmount = 1000 }
+    if (value == 2){ currentAmount = 5000 }
+    if (value == 3){ currentAmount = 10000 }
+    curentTxWithAmount = +curentTx + +value;
+
     let bets = await bettingContract.getBetters(curentTxWithAmount).call({
+            shouldPollResponse: true,
+            callValue: 0
+    });
+    upCount = bets.upCount.toNumber();
+    $('#upCount').html(upCount);
+    downCount = bets.downCount.toNumber()
+    $('#downCount').html(downCount);
+    $(".winAmount").collapse('hide');
+    $(".thirdPart").collapse('hide');
+    $(".increase").removeClass('active');
+    $(".fall").removeClass('active');
+
+    console.log('curentTxWithAmount=' + curentTxWithAmount);
+}
+
+async function createBet() {
+    if (tokenBalance < currentAmount){
+        alert('ERROR: Token balance < Current Bet');
+        return;
+    }
+    
+    let direction;
+    if ($('.fall.active').length == 0) direction = 1; else direction = 2;
+    $('.thirdPart .placeABet').hide(); //show "tanks for bet" label
+    $('.thirdPart .betAccepted').show();
+    await bettingContract.createBet(curentTxWithAmount, direction).send({
         shouldPollResponse: true,
         callValue: 0});
-    console.log(bets);
-    console.log('curentTxWithAmount='+curentTxWithAmount);
+
+    $('.thirdPart .placeABet').show();
+    $('.thirdPart .betAccepted').hide();
+    await rebuildPeoples($('input[name=amount]:checked').val())
 }
 
 $(function () {
@@ -60,6 +93,16 @@ $(function () {
     $('#priceBtn').change(function (e) { // show "place a bet" button when click "increase" of "fail" price button
         $(".winAmount").collapse('show');
         $(".thirdPart").collapse('show');
+        let sum = (upCount+downCount+1)*currentAmount*0.9;
+        let direction = e.target.defaultValue;
+        if (direction == 1){
+            sum = sum / (upCount+1)
+        } else {
+            sum = sum / (downCount+1)
+        }
+        $('#winAmountMood').html(sum);
+        //alert(sum);
+
     });
     $('#termsAccept').change(function (e) { //enable "place a bet" button when checkbox is checked
         if($(this).prop('checked') == true){
@@ -73,12 +116,11 @@ $(function () {
         e.preventDefault(); //stop page reload
         $(this).trigger('reset'); //reset form data
         $('#placeABet').prop('disabled', true);
-        $('.thirdPart .placeABet').hide(); //show "tanks for bet" label
-        $('.thirdPart .betAccepted').show();
-        setTimeout(function time(){ // set timer to hide "tanks for bet" label after 3 sec
-            $('.thirdPart .placeABet').show();
-            $('.thirdPart .betAccepted').hide();
-        }, 3000);
+
+        //alert(1);
+        createBet();
+
+
     });
     $('#timeline').change(function (e) {
         timeSlice = +$('[name="time"]:checked').val();
@@ -174,15 +216,16 @@ function processPrices(data) {
         });
         curentTx = prices[sliceInterval].tx;
         $('.endPrice .timerData .amount').html(Number.parseFloat(prices[sliceInterval].price).toFixed(6));
-        let txInput = $('.endPrice .timerData [name="tx"]');
+        rebuildPeoples($('input[name=amount]:checked').val());
+        /*let txInput = $('.endPrice .timerData [name="tx"]');
         if (txInput.length > 0) {
             txInput.val(prices[sliceInterval].tx);
 
         } else {
             $('.endPrice .timerData').append('<input type="hidden" name="tx" value="'+prices[sliceInterval].tx+'">');
-        }
+        }*/
     }
-    rebuildPeoples();
+
 }
 
 function processServerTime(time) {
