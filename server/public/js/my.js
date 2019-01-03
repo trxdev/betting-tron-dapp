@@ -27,7 +27,7 @@ function initTronWeb() {
     }
 }
 async function contractInit() {
-    bettingContract = await tronWeb.contract().at('TAUqhvSZeygnvxYw6BAwNMLBai7YMQyHWj');
+    bettingContract = await tronWeb.contract().at('TXTZG67XFLuRYnMPF8JvNvoVGmyZ1Z8EPu');
     tokenContract = await tronWeb.contract().at(await bettingContract.tokenAddress().call());
     defaultAddress = tronWeb.defaultAddress.base58;
     tokenBalance = (await tokenContract.balanceOf(defaultAddress).call({
@@ -36,6 +36,7 @@ async function contractInit() {
     console.log('address=' + defaultAddress);
     console.log('token balance=' + tokenBalance);
     await rebuildPeoples($('input[name=amount]:checked').val())
+
 }
 setTimeout(initTronWeb, 500);
 
@@ -67,7 +68,7 @@ async function createBet() {
         alert('ERROR: Token balance < Current Bet');
         return;
     }
-    
+
     let direction;
     if ($('.fall.active').length == 0) direction = 1; else direction = 2;
     $('.thirdPart .placeABet').hide(); //show "tanks for bet" label

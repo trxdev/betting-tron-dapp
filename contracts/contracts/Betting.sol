@@ -20,10 +20,10 @@ interface IERC20 {
 contract Betting is Owned {
     using SafeMath for uint;
 
-    event BettingStarted(uint index, uint rate, uint endTimestamp, uint bet);
-    event BettingEnd(uint index, uint endRate, uint direction, uint winBet);
-    event Bet(uint index, uint direction, address addr);
-    event Reward(uint index, address add, uint winBet);
+    event BettingStarted(uint indexed index, uint rate, uint endTimestamp, uint bet);
+    event BettingEnd(uint indexed index, uint endRate, uint direction, uint winBet);
+    event Bet(uint indexed index, uint direction, address indexed addr, uint bet);
+    event Reward(uint indexed index, address indexed addr, uint winBet);
 
     IERC20 token;
     address commissionRecipient;
@@ -176,7 +176,7 @@ contract Betting is Owned {
             bettingStorage[index].addressDown.push(msg.sender);
         }
 
-        emit Bet(index, direction, msg.sender);
+        emit Bet(index, direction, msg.sender, bet);
     }
 
 }
