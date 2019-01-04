@@ -94,6 +94,8 @@ async function rebuildPeoples(value) {
             $('.createBet').html('<p class="label">Create a bet</p>');
             console.log(prices['1d'].tx);
             for(let i=0;i<json.length;i++){
+                if (json[i].result.addr != '0x'+tronWeb.defaultAddress.hex.replace('41',''))
+                    continue;
                 if (json[i].result.index - prices['1d'].tx >= 0 && json[i].result.index - prices['1d'].tx <= 3) {
                     calcWin(json[i].result.index, prices['1d'].price, json[i].result.direction, json[i].result.bet, prices['1d'].endTime);
                 }
@@ -124,7 +126,9 @@ async function rebuildPeoples(value) {
         success: function(json){
             $('.completeBet').html('<p class="label">Complete bet</p>');
             for(let i=0;i<json.length;i++){
-                console.log(json[i])
+                if (json[i].result.addr != '0x'+tronWeb.defaultAddress.hex.replace('41',''))
+                    continue;
+                //console.log(json[i])
                 $('.completeBet').append(`<div class="row">
                                     <div class="col-7">
                                         <span class="date">${new Date(json[i].block_timestamp).toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')}</span>
