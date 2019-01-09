@@ -11,6 +11,7 @@ const solidityNode = new HttpProvider("https://api.shasta.trongrid.io"); // Soli
 const eventServer = "https://api.shasta.trongrid.io";
 
 const privateKey = process.env.PK;
+const enableCron = process.env.ENABLE_CRON || false;
 const tronWeb = new TronWeb(
     fullNode,
     solidityNode,
@@ -84,7 +85,7 @@ function generateBet(startTime, type) {
     bet.duration = type;
     bet.ended = false;
     console.log('start='+preUrl);
-    bet.price = (+klines[1]+(+klines[4])) / 2;
+    bet.price = (+klines[2]+(+klines[3])) / 2;
     bet.id = bet.startTimeStr + '_' + bet.duration;
     return bet;
 }
@@ -198,18 +199,20 @@ async function task(){
     //res.send(JSON.stringify(db.bets));
 }
 let awaiting = false;
-cron.schedule('*/10 * * * * *', async () => {
-    if (awaiting){
-        console.log('CRON: already work')
-        return;
-    }
-    console.log('run task');
-    awaiting = true;
-    await task();
-    awaiting = false;
-    console.log('end task');
+if (enableCron) {
+    cron.schedule('*/10 * * * * *', async () => {
+        if (awaiting){
+            console.log('CRON: already work')
+            return;
+        }
+        console.log('run task');
+        awaiting = true;
+        await task();
+        awaiting = false;
+        console.log('end task');
 
-});
+    });
+}
 app.use(cors())
 app.get('/api/bettings/active', function (req, res) {
     const adapter = new FileSync('db/db.json');
@@ -232,9 +235,14 @@ app.get('/api/contracts', function (req, res) {
                     };
     res.send(JSON.stringify(contracts))
 });
-/*app.get('/', async function (req, res) {
-    res.send('');
-});*/
+app.get('/api/cors', async function (req, res) {
+    let response;
+    if (req.query.url)
+        response = request('GET', req.query.url).getBody().toString();
+    else
+        response = '';
+    res.send(response);
+});
 
 app.use(express.static('public'));
 
