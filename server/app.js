@@ -199,7 +199,7 @@ async function task(){
     //res.send(JSON.stringify(db.bets));
 }
 let awaiting = false;
-if (enableCron) {
+if (enableCron === true) {
     cron.schedule('*/10 * * * * *', async () => {
         if (awaiting){
             console.log('CRON: already work')

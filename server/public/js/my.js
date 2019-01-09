@@ -9,7 +9,8 @@ var serverTime = 0,
     curentTxWithAmount = 0,
     currentAmount = 0,
     upCount = 0,
-    downCount = 0;
+    downCount = 0,
+    currentPrice = 0;
 var utils = '';
 var server = 'http://159.65.88.52';
 var endpoint = '/api/bettings/active';
@@ -169,8 +170,8 @@ $(function () {
     sliceInterval = getSliceInterval();
     currencySymbol = $('[name="currency"]:checked').val();
     getServerTime();
-    getServerCandlestickData(currencySymbol, sliceInterval);
     getPricesData();
+    getServerCandlestickData(currencySymbol, sliceInterval);
 
     $('#priceBtn').change(function (e) { // show "place a bet" button when click "increase" of "fail" price button
         $(".winAmount").collapse('show');
@@ -224,6 +225,8 @@ function getDateStringFromTimestamp(timestamp) {
         day = date.getDate() + '',
         hour = date.getHours() + '',
         min = date.getMinutes() + '';
+        sec = date.getSeconds() + '';
+        msec = date.getMilliseconds() + '';
     if((month + '').length == 1){
         month = '0' + month;
     }
@@ -236,7 +239,15 @@ function getDateStringFromTimestamp(timestamp) {
     if((min + '').length == 1){
         min = '0' + min;
     }
-    var dateString = year+'-'+month+'-'+day+' '+hour+':'+min;
+    if((sec + '').length == 1){
+        sec = '0' + sec;
+    }
+    if((msec + '').length < 3){
+        for (var i=0; i<=3-msec.length;i++){
+            msec = '0' + msec;
+        }
+    }
+    var dateString = year+'-'+month+'-'+day+'T'+hour+':'+min+':'+sec+'.'+msec+'Z';
     return dateString;
 }
 
@@ -297,7 +308,8 @@ function processPrices(data) {
             prices[item.duration] = {price: item.price, tx: item.tx, endTime: item.endTime};
         });
         curentTx = prices[sliceInterval].tx;
-        $('.endPrice .timerData .amount').html(Number.parseFloat(prices[sliceInterval].price).toFixed(6));
+        currentPrice = Number.parseFloat(prices[sliceInterval].price).toFixed(6);
+        $('.endPrice .timerData .amount').html(currentPrice);
         rebuildPeoples($('input[name=amount]:checked').val());
         /*let txInput = $('.endPrice .timerData [name="tx"]');
         if (txInput.length > 0) {
@@ -379,51 +391,79 @@ function processServerTime(time) {
 
 function processCandlestickData(data) {
     var trace = {
-        x: [],
-        open: [],
-        high: [],
-        low: [],
-        close: [],
-        decreasing: {line: {color: '#EF5350'}},
-        increasing: {line: {color: '#26A69A'}},
-        line: {color: 'rgba(31,119,180,1)'},
-        type: 'candlestick',
-        xaxis: 'x',
-        yaxis: 'y'
+        categoryData: [],
+        values: [],
     };
     if (Array.isArray(data)) {
         var startDate = null,
             endDate = null;
         data.forEach(function (item, index) {
-            trace.x.push(getDateStringFromTimestamp(item[0]));
-            trace.open.push(item[1]);
-            trace.high.push(item[2]);
-            trace.low.push(item[3]);
-            trace.close.push(item[4]);
+            //trace.categoryData.push(getDateStringFromTimestamp(item[0]));
+            trace.values.push([item[0], item[1], item[4], item[3], item[2]]);
         });
-        data = [trace];
-        var layout = {
-            dragmode: 'lasso',
-            margin: {
-                r: 10,
-                t: 25,
-                b: 50,
-                l: 40
+        var upColor = '#26A69A';
+        var upBorderColor = '#26A69A';
+        var downColor = '#EF5350';
+        var downBorderColor = '#EF5350';
+
+        option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        color: '#000',
+                        backgroundColor: '#fff',
+                    }
+                },
+                crossStyle: {
+                    type: 'solid',
+                },
+                lineStyle: {
+                    type: 'solid',
+                },
+                backgroundColor: '#fff',
+                textStyle: {
+                    color: '#000',
+                },
             },
-            showlegend: false,
-            xaxis: {
-                autorange: true,
-                domain: [0, 1],
-                rangeslider: {visible: false},
-                type: 'date'
+            grid: {
+                left: 60,
+                right: 60,
+                bottom: '15%'
             },
-            yaxis: {
-                autorange: true,
-                domain: [0, 1],
-                type: 'linear'
-            }
+            xAxis: {
+                type: 'time',
+                boundaryGap: ['20%', '20%'],
+            },
+            yAxis: {
+                type: 'value',
+                scale: true,
+                splitArea: {
+                    show: true
+                },
+                position: 'right',
+            },
+            series: [
+                {
+                    type: 'candlestick',
+                    data: trace.values,
+                    itemStyle: {
+                        normal: {
+                            color: upColor,
+                            color0: downColor,
+                            borderColor: upBorderColor,
+                            borderColor0: downBorderColor
+                        }
+                    },
+                    
+                },
+            ],
+            backgroundColor: '#fff',
         };
-        Plotly.newPlot('plotly-div', data, layout, {displayModeBar: false});
+
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.setOption(option);
     }
 }
 
