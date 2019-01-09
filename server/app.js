@@ -11,7 +11,7 @@ const solidityNode = new HttpProvider("https://api.shasta.trongrid.io"); // Soli
 const eventServer = "https://api.shasta.trongrid.io";
 
 const privateKey = process.env.PK;
-const enableCron = process.env.ENABLE_CRON || false;
+const enableCron = process.env.ENABLE_CRON || '0';
 const tronWeb = new TronWeb(
     fullNode,
     solidityNode,
@@ -199,7 +199,8 @@ async function task(){
     //res.send(JSON.stringify(db.bets));
 }
 let awaiting = false;
-if (enableCron === true) {
+if (enableCron == '1') {
+    console.log('CRON ENABLED');
     cron.schedule('*/10 * * * * *', async () => {
         if (awaiting){
             console.log('CRON: already work')
