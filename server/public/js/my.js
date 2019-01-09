@@ -456,22 +456,7 @@ function processCandlestickData(data) {
                             borderColor0: downBorderColor
                         }
                     },
-                    markPoint: {
-                        label: {
-                            distance: 15,
-                            color: '#000',
-                        },
-                        data: [
-                            {
-                                symbol: 'image://img/r.png',
-                                symbolOffset: [80,0],
-                                symbolSize: [144,80],
-                                name: 'current value',
-                                type: 'max',
-                                value: currentPrice,
-                            }
-                        ]
-                    },
+                    
                 },
             ],
             backgroundColor: '#fff',
