@@ -11,6 +11,9 @@ var serverTime = 0,
     upCount = 0,
     downCount = 0,
     currentPrice = 0,
+    binanceCurrentPrice = 0,
+    option = null,
+    myChart = null,
     bets = [];
 var utils = '';
 var server = 'http://159.65.88.52';
@@ -181,6 +184,12 @@ $(function () {
     currencySymbol = $('[name="currency"]:checked').val();
     getServerTime();
     getPricesData();
+    getCurrentPrice(currencySymbol);
+
+    setInterval(function time() {
+        getCurrentPrice(currencySymbol);
+    }, 5*1000);
+
     getServerCandlestickData(currencySymbol, sliceInterval);
 
     $('#priceBtn').change(function (e) { // show "place a bet" button when click "increase" of "fail" price button
@@ -263,7 +272,7 @@ function getDateStringFromTimestamp(timestamp) {
 
 function getServerTime() {
     $.ajax({
-        url:'https://cors.io/?https://api.binance.com/api/v1/time',
+        url:'http://moodtoken.com/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv1%2Ftime',
         complete: function (response) {
             processServerTime(JSON.parse(response.responseText).serverTime);
         },
@@ -275,9 +284,21 @@ function getServerTime() {
 
 function getServerCandlestickData(symbol, interval) {
     $.ajax({
-        url:'https://cors.io/?https://api.binance.com/api/v1/klines?symbol='+symbol+'&interval='+interval+'&limit=20',
+        url:'http://moodtoken.com/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv1%2Fklines%3Fsymbol%3D'+symbol+'%26interval%3D'+interval+'%26limit%3D20',
         complete: function (response) {
             processCandlestickData(JSON.parse(response.responseText));
+        },
+        error: function () {
+            console.log('Can\'t get server candlestick data!');
+        },
+    });
+}
+
+function getCurrentPrice(symbol) {
+    $.ajax({
+        url:'http://moodtoken.com/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv3%2Fticker%2Fprice%3Fsymbol%3D'+symbol,
+        complete: function (response) {
+            processCurrentPrice(JSON.parse(response.responseText));
         },
         error: function () {
             console.log('Can\'t get server candlestick data!');
@@ -416,6 +437,11 @@ function processCandlestickData(data) {
         var downColor = '#EF5350';
         var downBorderColor = '#EF5350';
 
+        var lastDate = trace.values[trace.values.length-1][0],
+            max = lastDate + (lastDate - trace.values[0][0]) * 0.3,
+            min = trace.values[0][0] - timeSlice,
+            avgPrice = (+trace.values[trace.values.length-1][2] + +trace.values[trace.values.length-1][1])/2;
+
         option = {
             tooltip: {
                 trigger: 'axis',
@@ -440,17 +466,30 @@ function processCandlestickData(data) {
             grid: {
                 left: 60,
                 right: 60,
-                bottom: '15%'
+                bottom: '15%',
+                containLabel: true,
             },
             xAxis: {
                 type: 'time',
                 boundaryGap: ['20%', '20%'],
+                scale: true,
+                splitArea: {
+                    show: true,
+                    areaStyle: {
+                        color: 'transparent',
+                    }
+                },
+                max: max,
+                min: min,
             },
             yAxis: {
                 type: 'value',
                 scale: true,
                 splitArea: {
-                    show: true
+                    show: true,
+                    areaStyle: {
+                        color: 'transparent',
+                    }
                 },
                 position: 'right',
             },
@@ -466,14 +505,41 @@ function processCandlestickData(data) {
                             borderColor0: downBorderColor
                         }
                     },
-
+                    markPoint: {
+                        data: [
+                            {
+                                symbol: 'image://img/r.png',
+                                symbolOffset: [80,0],
+                                symbolSize: [144,80],
+                                name: 'Current price',
+                                coord: [lastDate, avgPrice],
+                                value: binanceCurrentPrice,
+                                label: {
+                                    position: 'insideLeft',
+                                    distance: 55,
+                                    color: '#000',
+                                    fontSize: 14,
+                                },
+                            }
+                        ]
+                    },
                 },
             ],
             backgroundColor: '#fff',
         };
 
-        var myChart = echarts.init(document.getElementById('main'));
+        myChart = echarts.init(document.getElementById('main'));
         myChart.setOption(option);
+    }
+}
+
+function processCurrentPrice(data) {
+    if (typeof data === 'object') {
+        binanceCurrentPrice = Number.parseFloat(data.price).toFixed(6);
+        if (option != null) {
+            option.series[0].markPoint.data[0].value = binanceCurrentPrice;
+            myChart.setOption(option);
+        }
     }
 }
 
