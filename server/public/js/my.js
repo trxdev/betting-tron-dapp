@@ -10,7 +10,8 @@ var serverTime = 0,
     currentAmount = 0,
     upCount = 0,
     downCount = 0,
-    currentPrice = 0;
+    currentPrice = 0,
+    bets = [];
 var utils = '';
 var server = 'http://159.65.88.52';
 var endpoint = '/api/bettings/active';
@@ -47,6 +48,11 @@ async function contractInit() {
 
 }
 setTimeout(initTronWeb, 500);
+
+setInterval(async function(){
+    rebuildPeoples($('input[name=amount]:checked').val(), true)
+}, 15000);
+
 async function calcWin(index, price, direction, bet, time){
     let bets = await bettingContract.getBetters(index).call({
         shouldPollResponse: true,
@@ -67,17 +73,21 @@ async function calcWin(index, price, direction, bet, time){
     $('.ifWinList').append(` <li>You win ${win/100} MOOD if price ${dir} ${price} at ${new Date(time*1000).toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')}</li>`)
     console.log(index);
 }
-async function rebuildPeoples(value) {
+async function rebuildPeoples(value, refreshIfBetsChanged = false) {
     if (value == 0){ currentAmount = 100 }
     if (value == 1){ currentAmount = 1000 }
     if (value == 2){ currentAmount = 5000 }
     if (value == 3){ currentAmount = 10000 }
     curentTxWithAmount = +curentTx + +value;
 
-    let bets = await bettingContract.getBetters(curentTxWithAmount).call({
+    let newBets = await bettingContract.getBetters(curentTxWithAmount).call({
             shouldPollResponse: true,
             callValue: 0
     });
+    if (refreshIfBetsChanged == true && newBets.upCount.toNumber() == bets.upCount.toNumber()
+     && newBets.downCount.toNumber() == bets.downCount.toNumber())
+        return;
+    bets = newBets;
     upCount = bets.upCount.toNumber();
     $('#upCount').html(upCount);
     downCount = bets.downCount.toNumber()
@@ -456,7 +466,7 @@ function processCandlestickData(data) {
                             borderColor0: downBorderColor
                         }
                     },
-                    
+
                 },
             ],
             backgroundColor: '#fff',
