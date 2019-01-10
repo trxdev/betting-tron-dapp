@@ -14,7 +14,13 @@ var serverTime = 0,
     binanceCurrentPrice = 0,
     option = null,
     myChart = null,
+    socket = null,
+    klinesStamp = 0,
     bets = [];
+var trace = {
+    categoryData: [],
+    values: [],
+};
 var utils = '';
 var server = 'http://159.65.88.52';
 var endpoint = '/api/bettings/active';
@@ -185,10 +191,7 @@ $(function () {
     getServerTime();
     getPricesData();
     getCurrentPrice(currencySymbol);
-
-    setInterval(function time() {
-        getCurrentPrice(currencySymbol);
-    }, 5*1000);
+    startSocket();
 
     getServerCandlestickData(currencySymbol, sliceInterval);
 
@@ -230,6 +233,7 @@ $(function () {
         getServerTime();
         getServerCandlestickData(currencySymbol,sliceInterval);
         getPricesData();
+        startSocket();
     });
     $('#currSymbol').change(function (e) {
         currencySymbol = $('[name="currency"]:checked').val();
@@ -421,15 +425,12 @@ function processServerTime(time) {
 }
 
 function processCandlestickData(data) {
-    var trace = {
-        categoryData: [],
-        values: [],
-    };
     if (Array.isArray(data)) {
-        var startDate = null,
-            endDate = null;
+        trace = {
+            categoryData: [],
+            values: [],
+        }
         data.forEach(function (item, index) {
-            //trace.categoryData.push(getDateStringFromTimestamp(item[0]));
             trace.values.push([item[0], item[1], item[4], item[3], item[2]]);
         });
         var upColor = '#26A69A';
@@ -535,11 +536,7 @@ function processCandlestickData(data) {
 
 function processCurrentPrice(data) {
     if (typeof data === 'object') {
-        binanceCurrentPrice = Number.parseFloat(data.price).toFixed(6);
-        if (option != null) {
-            option.series[0].markPoint.data[0].value = binanceCurrentPrice;
-            myChart.setOption(option);
-        }
+
     }
 }
 
@@ -559,4 +556,33 @@ function getSliceInterval() {
     if (minutes > 0) {
         return minutes + 'm';
     }
+}
+
+function startSocket() {
+    if (socket != null) {
+        socket.close(1000);
+    }
+    socket = new WebSocket('wss://stream.binance.com:9443/stream?streams='+currencySymbol.toLowerCase()+'@kline_'+sliceInterval+'/'+currencySymbol.toLowerCase()+'@ticker');
+    socket.onmessage = function(event) {
+        if (option != null) {
+            var message = JSON.parse(event.data).data;
+            if ('kline' == message.e) {
+                /*if (klinesStamp && klinesStamp != message.k.t) {
+
+                }*/
+                var optData = option.series[0].data,
+                    optArr = optData[optData.length-1];
+                optArr[0] = message.k.t;
+                optArr[1] = message.k.o;
+                optArr[2] = message.k.c;
+                optArr[3] = message.k.l;
+                optArr[4] = message.k.h;
+            } else if ('24hrTicker' == message.e) {
+                binanceCurrentPrice = Number.parseFloat(message.c).toFixed(6);
+                option.series[0].markPoint.data[0].value = binanceCurrentPrice;
+            }
+            myChart.setOption(option);
+        }
+
+    };
 }
