@@ -1,22 +1,21 @@
-
 Running migration: 1_initial_migration.js
   Replacing Migrations...
   Migrations:
-    (base58) TMosmDdVZAXH2xyYJmEuRVyTfw5Fd57PuV
-    (hex) 4181ddb4c651edde960456afa5d7caf4cdd6879947
+    (base58) TXeMy2FQTTzu2nWK25LZd67gCSNRc5gMCA
+    (hex) 41edc258f45815b35c46961773d884ebffeb8c81a0
 Saving successful migration to network...
 Saving artifacts...
 Running migration: 2_deploy_contracts.js
   Running step...
   Replacing MoodToken...
   MoodToken:
-    (base58) TSW5AYbsGUeW9pd6uvwxw5AxQJG2qKWhnE
-    (hex) 41b5585da6e56ea9a28e64a688e0b5f7b8f52bd8f9
+    (base58) TEKcH4UfapjQedLfg8cG6UxDi9eQkV9od6
+    (hex) 412fbc408a1db98418686043987448ac82470e8732
   Replacing Betting...
   Betting:
-    (base58) TK8cgvTGYGozwNV8egzDmbYbkE9UQw9hQJ
-    (hex) 416480a61c8483af22af8a21ff8d50a1724c8d390f
-TOKEN =41b5585da6e56ea9a28e64a688e0b5f7b8f52bd8f9
-BETTING =416480a61c8483af22af8a21ff8d50a1724c8d390f
+    (base58) TGfTqNzgBeuWKPpCq6JMJNk7L3hucjLF1C
+    (hex) 41496dc67625a29ae6cd6d1a061c2f56ce7b91ebe9
+TOKEN =412fbc408a1db98418686043987448ac82470e8732
+BETTING =41496dc67625a29ae6cd6d1a061c2f56ce7b91ebe9
 Saving successful migration to network...
-Saving artifacts..
+Saving artifacts...

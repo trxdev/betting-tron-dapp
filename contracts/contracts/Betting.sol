@@ -20,7 +20,7 @@ interface IERC20 {
 contract Betting is Owned {
     using SafeMath for uint;
 
-    event BettingStarted(uint indexed index, uint rate, uint endTimestamp, uint bet);
+    event BettingStarted(uint indexed index, uint rate, uint endTimestamp, uint endBetAcceptTimestamp, uint bet);
     event BettingEnd(uint indexed index, uint endRate, uint direction, uint winBet);
     event Bet(uint indexed index, uint direction, address indexed addr, uint bet);
     event Reward(uint indexed index, address indexed addr, uint winBet);
@@ -40,6 +40,8 @@ contract Betting is Owned {
     struct Betting {
         uint rate;
         uint endRate;
+        uint endBet;
+        uint endBetAcceptTimestamp;
         uint endTimestamp;
         bool ended;
         uint bet;
@@ -49,7 +51,6 @@ contract Betting is Owned {
         address[] addressUp;
         address[] addressDown;
     }
-
 
     Betting[] public bettingStorage;
 
@@ -70,44 +71,51 @@ contract Betting is Owned {
         return (bettingStorage[_index].addressUp.length, bettingStorage[_index].addressDown.length, bettingStorage[_index].addressUp, bettingStorage[_index].addressDown);
 
     }
-
+    function getResults(uint256 _index) public view
+        returns(bool ended,
+                uint result,
+                uint sum,
+                uint winBet) {
+        return (bettingStorage[_index].ended,
+                bettingStorage[_index].result,
+                bettingStorage[_index].sum,
+                bettingStorage[_index].winBet);
+    }
     function getBetting(uint256 _index) public view
         returns(uint rate,
                 uint endRate,
                 uint endTimestamp,
+                uint endBetAcceptTimestamp,
                 uint bet,
-                uint sum,
-                uint result,
-                uint winBet) {
+                uint sum) {
         return (bettingStorage[_index].rate,
                 bettingStorage[_index].endRate,
                 bettingStorage[_index].endTimestamp,
+                bettingStorage[_index].endBetAcceptTimestamp,
                 bettingStorage[_index].bet,
-                bettingStorage[_index].sum,
-                bettingStorage[_index].result,
-                bettingStorage[_index].winBet);
+                bettingStorage[_index].sum);
     }
 
-    function createBetting(uint rate, uint endTimestamp) onlyOwner public returns(uint256) {
+    function createBetting(uint rate, uint endBetAcceptTimestamp, uint endTimestamp) onlyOwner public returns(uint256) {
         Betting memory betting;
         betting.rate = rate;
         betting.endTimestamp = endTimestamp;
         betting.ended = false;
         betting.bet = BET100;
         uint index = bettingStorage.length;
-        emit BettingStarted(bettingStorage.length, rate, endTimestamp, betting.bet);
+        emit BettingStarted(bettingStorage.length, rate, endTimestamp, endBetAcceptTimestamp, betting.bet);
         bettingStorage.push(betting);
 
         betting.bet = BET1K;
-        emit BettingStarted(bettingStorage.length, rate, endTimestamp, betting.bet);
+        emit BettingStarted(bettingStorage.length, rate, endTimestamp, endBetAcceptTimestamp, betting.bet);
         bettingStorage.push(betting);
 
         betting.bet = BET5K;
-        emit BettingStarted(bettingStorage.length, rate, endTimestamp, betting.bet);
+        emit BettingStarted(bettingStorage.length, rate, endTimestamp, endBetAcceptTimestamp, betting.bet);
         bettingStorage.push(betting);
 
         betting.bet = BET10K;
-        emit BettingStarted(bettingStorage.length, rate, endTimestamp, betting.bet);
+        emit BettingStarted(bettingStorage.length, rate, endTimestamp, endBetAcceptTimestamp, betting.bet);
         bettingStorage.push(betting);
 
         return index;
@@ -157,9 +165,9 @@ contract Betting is Owned {
     }
 
     function createBet(uint index, uint direction) public {
-
         Betting memory betting = bettingStorage[index];
         require(betting.rate != 0);
+        require(now <= betting.endBetAcceptTimestamp);
         require(betting.ended == false);
         require(direction == DIRECTORY_UP || direction == DIRECTORY_DOWN);
 

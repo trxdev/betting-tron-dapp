@@ -18,8 +18,8 @@ const tronWeb = new TronWeb(
     eventServer,
     privateKey
 );
-const contractAbi = '[{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"bettingStorage","outputs":[{"name":"rate","type":"uint256"},{"name":"endRate","type":"uint256"},{"name":"endTimestamp","type":"uint256"},{"name":"ended","type":"bool"},{"name":"bet","type":"uint256"},{"name":"sum","type":"uint256"},{"name":"result","type":"uint256"},{"name":"winBet","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_tokenAddress","type":"address"},{"name":"_commissionRecipient","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"rate","type":"uint256"},{"indexed":false,"name":"endTimestamp","type":"uint256"},{"indexed":false,"name":"bet","type":"uint256"}],"name":"BettingStarted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"endRate","type":"uint256"},{"indexed":false,"name":"direction","type":"uint256"},{"indexed":false,"name":"winBet","type":"uint256"}],"name":"BettingEnd","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"direction","type":"uint256"},{"indexed":false,"name":"addr","type":"address"}],"name":"Bet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"index","type":"uint256"},{"indexed":false,"name":"add","type":"address"},{"indexed":false,"name":"winBet","type":"uint256"}],"name":"Reward","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":true,"inputs":[],"name":"commissionRecipientAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"rate","type":"uint256"},{"name":"endTimestamp","type":"uint256"}],"name":"createBetting","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"index","type":"uint256"},{"name":"endRate","type":"uint256"}],"name":"endBetting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"index","type":"uint256"},{"name":"direction","type":"uint256"}],"name":"createBet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
-const contractAddress = 'TK8cgvTGYGozwNV8egzDmbYbkE9UQw9hQJ';
+const contractAbi = '[{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"bettingStorage","outputs":[{"name":"rate","type":"uint256"},{"name":"endRate","type":"uint256"},{"name":"endBet","type":"uint256"},{"name":"endBetAcceptTimestamp","type":"uint256"},{"name":"endTimestamp","type":"uint256"},{"name":"ended","type":"bool"},{"name":"bet","type":"uint256"},{"name":"sum","type":"uint256"},{"name":"result","type":"uint256"},{"name":"winBet","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_tokenAddress","type":"address"},{"name":"_commissionRecipient","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"index","type":"uint256"},{"indexed":false,"name":"rate","type":"uint256"},{"indexed":false,"name":"endTimestamp","type":"uint256"},{"indexed":false,"name":"endBetAcceptTimestamp","type":"uint256"},{"indexed":false,"name":"bet","type":"uint256"}],"name":"BettingStarted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"index","type":"uint256"},{"indexed":false,"name":"endRate","type":"uint256"},{"indexed":false,"name":"direction","type":"uint256"},{"indexed":false,"name":"winBet","type":"uint256"}],"name":"BettingEnd","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"index","type":"uint256"},{"indexed":false,"name":"direction","type":"uint256"},{"indexed":true,"name":"addr","type":"address"},{"indexed":false,"name":"bet","type":"uint256"}],"name":"Bet","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"index","type":"uint256"},{"indexed":true,"name":"addr","type":"address"},{"indexed":false,"name":"winBet","type":"uint256"}],"name":"Reward","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":true,"inputs":[],"name":"tokenAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"commissionRecipientAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getBetters","outputs":[{"name":"upCount","type":"uint256"},{"name":"downCount","type":"uint256"},{"name":"addressUp","type":"address[]"},{"name":"addressDown","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getResults","outputs":[{"name":"ended","type":"bool"},{"name":"result","type":"uint256"},{"name":"sum","type":"uint256"},{"name":"winBet","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getBetting","outputs":[{"name":"rate","type":"uint256"},{"name":"endRate","type":"uint256"},{"name":"endTimestamp","type":"uint256"},{"name":"endBetAcceptTimestamp","type":"uint256"},{"name":"bet","type":"uint256"},{"name":"sum","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"rate","type":"uint256"},{"name":"endBetAcceptTimestamp","type":"uint256"},{"name":"endTimestamp","type":"uint256"}],"name":"createBetting","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"index","type":"uint256"},{"name":"endRate","type":"uint256"}],"name":"endBetting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"index","type":"uint256"},{"name":"direction","type":"uint256"}],"name":"createBet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
+const contractAddress = 'TGfTqNzgBeuWKPpCq6JMJNk7L3hucjLF1C';
 
 const bettingContract = tronWeb.contract(JSON.parse(contractAbi), contractAddress);
 
@@ -80,10 +80,13 @@ function generateBet(startTime, type) {
 
     let klines = JSON.parse(response)[0];
     bet.preUrl = preUrl;
-    bet.endTime = bet.startTime + duration;
+    bet.endBetAcceptTime = bet.startTime + duration;
+    bet.endBetAcceptTimeStr = timeConverter(bet.endBetAcceptTime);
+    bet.endTime = bet.startTime + 2 * duration;
     bet.endTimeStr = timeConverter(bet.endTime);
     bet.duration = type;
     bet.ended = false;
+    bet.endBetAccept = false;
     console.log('start='+preUrl);
     bet.price = (+klines[2]+(+klines[3])) / 2;
     bet.id = bet.startTimeStr + '_' + bet.duration;
@@ -109,7 +112,7 @@ function priceToUint(price) {
 
 async function addBetting(bet)
 {
-    let tx = await bettingContract.createBetting(priceToUint(bet.price), bet.endTime).send({
+    let tx = await bettingContract.createBetting(priceToUint(bet.price), bet.endBetAcceptTime, bet.endTime).send({
         shouldPollResponse: true,
         callValue: 0
     }).catch(function (err) {
@@ -151,9 +154,13 @@ async function task(){
     for(let index in db.bets) {
         let bet = db.bets[index];
         ids.push(bet.id);
+        if (bet.endBetAccept === false && startTime >= bet.endBetAcceptTime) {
+            db.bets[index].endBetAccept = true;
+            console.log('endBetAccept BET =' + bet.id);
+        }
         if (bet.ended === false && startTime >= bet.endTime) {
             db.bets[index].ended = true;
-            db.bets[index].endPrice = +getEndPrice(bet.startTime, bet.endTime, bet.duration);
+            db.bets[index].endPrice = +getEndPrice(bet.endBetAcceptTime, bet.endTime, bet.duration);
             await endBetting(db.bets[index]);
             console.log('End BET =' + bet.id);
         }
@@ -223,10 +230,28 @@ app.get('/api/bettings/active', function (req, res) {
     let bets = [];
     for(let index in db.bets) {
         let bet = db.bets[index];
-        if (bet.ended === false) {
+        if (bet.endBetAccept === false) {
             bets.push(bet);
         }
     }
+    res.send(JSON.stringify(bets));
+});
+
+app.get('/api/bettings/history', function (req, res) {
+    const adapter = new FileSync('db/db.json');
+    const database = low(adapter);
+    database.defaults({ bets: [], init: false, startTime: 0 }).write();
+    let db = database.getState();
+    let bets = [];
+    durationValue = req.query.duration;
+    for(let i = db.bets.length - 1; i >= 0 ; i-- ) {
+        if (db.bets[i].duration == durationValue) {
+            let bet = db.bets[i];
+            bets.push(bet);
+        }
+        if (bets.length >=25) break;
+    }
+
     res.send(JSON.stringify(bets));
 });
 

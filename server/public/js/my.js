@@ -30,11 +30,11 @@ var tokenContract;
 var defaultAddress;
 var tokenBalance;
 
-var bettingContractAddress = 'TK8cgvTGYGozwNV8egzDmbYbkE9UQw9hQJ';
+var bettingContractAddress = 'TGfTqNzgBeuWKPpCq6JMJNk7L3hucjLF1C';
 var eventServer = 'https://api.shasta.trongrid.io';
 var BetLogsUrl = eventServer + '/event/contract/' + bettingContractAddress + '/Bet?since=0&size=2000&page=1';
 var BetWinUrl =  eventServer +'/event/contract/' + bettingContractAddress + '/Reward?since=0&size=2000&page=1';
-
+var BettingStartedUrl =  eventServer +'/event/contract/' + bettingContractAddress + '/BettingStarted?since=0&size=2000&page=1';
 
 function initTronWeb() {
     if (!!window.tronWeb && window.tronWeb.ready){
@@ -62,6 +62,7 @@ setInterval(async function(){
     rebuildPeoples($('input[name=amount]:checked').val(), true)
 }, 15000);
 
+
 async function calcWin(index, price, direction, bet, time){
     let bets = await bettingContract.getBetters(index).call({
         shouldPollResponse: true,
@@ -80,8 +81,27 @@ async function calcWin(index, price, direction, bet, time){
         win = sum/downCount;
     }
     $('.ifWinList').append(` <li>You win ${win/100} MOOD if price ${dir} ${price} at ${new Date(time*1000).toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')}</li>`)
-    console.log(index);
+    //console.log(index);
 }
+async function rebuildHistory(value){
+    if (value == 0){ currentAmount = 10000 }
+    if (value == 1){ currentAmount = 100000 }
+    if (value == 2){ currentAmount = 500000 }
+    if (value == 3){ currentAmount = 1000000 }
+    curentTxWithAmount = +curentTx + +value;
+    $.ajax({
+        url: BettingStartedUrl,
+        cache: false,
+        success: function(json){
+            for(let i = 0;i<json.length;i++){
+                if (json[i].result.bet == currentAmount) {
+                    console.log(json[i].result);
+                }
+            }
+        }
+    });
+}
+
 async function rebuildPeoples(value, refreshIfBetsChanged = false) {
     if (value == 0){ currentAmount = 100 }
     if (value == 1){ currentAmount = 1000 }
@@ -93,6 +113,18 @@ async function rebuildPeoples(value, refreshIfBetsChanged = false) {
             shouldPollResponse: true,
             callValue: 0
     });
+    $('.address-list-increase').html('');
+    $('.address-list-fall').html('');
+    for (let i = 0; i < newBets.addressDown.length; i++) {
+        $('.address-list-fall').append(`<li>${newBets.addressDown[i]}</li>`);
+    }
+
+    for (let i = 0; i < newBets.addressUp.length; i++) {
+        $('.address-list-increase').append(`<li>${newBets.addressUp[i]}</li>`);
+    }
+    console.log('BETS::::');
+    console.log(newBets);
+
     if (refreshIfBetsChanged == true && newBets.upCount.toNumber() == bets.upCount.toNumber()
      && newBets.downCount.toNumber() == bets.downCount.toNumber())
         return;
@@ -276,7 +308,7 @@ function getDateStringFromTimestamp(timestamp) {
 
 function getServerTime() {
     $.ajax({
-        url:'http://moodtoken.com/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv1%2Ftime',
+        url:'/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv1%2Ftime',
         complete: function (response) {
             processServerTime(JSON.parse(response.responseText).serverTime);
         },
@@ -288,7 +320,7 @@ function getServerTime() {
 
 function getServerCandlestickData(symbol, interval) {
     $.ajax({
-        url:'http://moodtoken.com/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv1%2Fklines%3Fsymbol%3D'+symbol+'%26interval%3D'+interval+'%26limit%3D20',
+        url:'/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv1%2Fklines%3Fsymbol%3D'+symbol+'%26interval%3D'+interval+'%26limit%3D20',
         complete: function (response) {
             processCandlestickData(JSON.parse(response.responseText));
         },
@@ -300,7 +332,7 @@ function getServerCandlestickData(symbol, interval) {
 
 function getCurrentPrice(symbol) {
     $.ajax({
-        url:'http://moodtoken.com/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv3%2Fticker%2Fprice%3Fsymbol%3D'+symbol,
+        url:'/api/cors?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv3%2Fticker%2Fprice%3Fsymbol%3D'+symbol,
         complete: function (response) {
             processCurrentPrice(JSON.parse(response.responseText));
         },

@@ -364,3 +364,15 @@ body {
 .winnings .label {
     color: #888888;
 }
+
+.winnings li {
+    font-size: 75%;
+}
+.chooseYouBet {
+    font-family: Muli;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    font-size: 14px;
+    text-align: center;
+}

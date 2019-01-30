@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div id="main" style="min-height: 500px;"></div>
-            <div class="winnings row">
+            <div class="winnings row" style="display: none">
                 <div class="col-12 col-md-12">
                     <div class="cont">
                         <p class="label">
@@ -81,6 +81,34 @@
                         </ol>
                     </div>
                 </div>
+            </div>
+
+            <div class="winnings row row-eq-height">
+                <div class="col-12 col-md-6 pr-0">
+                    <div class="cont">
+                        <p class="label">
+                            Winners if the price increase:
+                        </p>
+                        <ol class="address-list-increase">
+
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 pl-0">
+                    <div class="cont">
+                        <p class="label">
+                            Winners if the price will fall:
+                        </p>
+                        <ol class="address-list-fall">
+
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="winnings row">
+
             </div>
         </div>
         <div class="col-12 col-lg-4">
@@ -186,12 +214,29 @@
                         </form>
                     </div>
                     <div class="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
-                        <div class="rightContent">
+                        <p class="chooseYouBet">
+                            Choose your bet
+                        </p>
+                        <div class="btn-group btn-group-toggle w-100 firstPart rightContent" data-toggle="buttons">
+                            <label class="btn btn-secondary active w-100" onclick=" rebuildHistory(0);">
+                                <input type="radio" class="historyAmount" name="historyAmount" value="0" autocomplete="off" checked="">100<br>MOOD
+                            </label>
+                            <label class="btn btn-secondary w-100" onclick=" rebuildHistory(1);">
+                                <input type="radio" class="historyAmount" name="historyAmount" value="1" autocomplete="off">1000<br>MOOD
+                            </label>
+                            <label class="btn btn-secondary w-100" onclick=" rebuildHistory(2);">
+                                <input type="radio" class="historyAmount" name="historyAmount" value="2" autocomplete="off">5000<br>MOOD
+                            </label>
+                            <label class="btn btn-secondary w-100" onclick=" rebuildHistory(3);">
+                                <input type="radio" class="historyAmount" name="historyAmount" value="3" autocomplete="off">10000<br>MOOD
+                            </label>
+                        </div>
+                        <div class="rightContent" style="display: none">
                             <div class="createBet">
                                 <p class="label">Create a bet</p>
 
                             </div>
-                            <div class="completeBet">
+                            <div class="completeBet" style="display: none">
                                 <p class="label">Complete bet</p>
                             </div>
                         </div>
