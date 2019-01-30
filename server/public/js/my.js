@@ -30,7 +30,7 @@ var tokenContract;
 var defaultAddress;
 var tokenBalance;
 
-var bettingContractAddress = 'TGfTqNzgBeuWKPpCq6JMJNk7L3hucjLF1C';
+var bettingContractAddress = 'TWuM4ziUqMG8QoenQYZFPhU9qTPzYmuTfa';
 var eventServer = 'https://api.shasta.trongrid.io';
 var BetLogsUrl = eventServer + '/event/contract/' + bettingContractAddress + '/Bet?since=0&size=2000&page=1';
 var BetWinUrl =  eventServer +'/event/contract/' + bettingContractAddress + '/Reward?since=0&size=2000&page=1';

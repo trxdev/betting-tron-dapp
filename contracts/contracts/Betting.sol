@@ -163,7 +163,9 @@ contract Betting is Owned {
             emit BettingEnd(index + j, endRate, betting.result, betting.winBet);
         }
     }
-
+    function nowt() public view returns(uint256) {
+        return now;
+    }
     function createBet(uint index, uint direction) public {
         Betting memory betting = bettingStorage[index];
         require(betting.rate != 0);
