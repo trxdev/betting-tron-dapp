@@ -99,6 +99,7 @@ contract Betting is Owned {
     function createBetting(uint rate, uint endBetAcceptTimestamp, uint endTimestamp) onlyOwner public returns(uint256) {
         Betting memory betting;
         betting.rate = rate;
+        betting.endBetAcceptTimestamp = endBetAcceptTimestamp;
         betting.endTimestamp = endTimestamp;
         betting.ended = false;
         betting.bet = BET100;

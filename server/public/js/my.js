@@ -30,7 +30,7 @@ var tokenContract;
 var defaultAddress;
 var tokenBalance;
 
-var bettingContractAddress = 'TWuM4ziUqMG8QoenQYZFPhU9qTPzYmuTfa';
+var bettingContractAddress = 'TVPYah5fok5RdA2epWs6boZ8sBSLYNVedi';
 var eventServer = 'https://api.shasta.trongrid.io';
 var BetLogsUrl = eventServer + '/event/contract/' + bettingContractAddress + '/Bet?since=0&size=2000&page=1';
 var BetWinUrl =  eventServer +'/event/contract/' + bettingContractAddress + '/Reward?since=0&size=2000&page=1';
@@ -201,7 +201,7 @@ async function createBet() {
         alert('ERROR: Token balance < Current Bet');
         return;
     }
-
+    await bettingContract.createBet(curentTxWithAmount, direction).call()
     let direction;
     if ($('.fall.active').length == 0) direction = 1; else direction = 2;
     $('.thirdPart .placeABet').hide(); //show "tanks for bet" label
