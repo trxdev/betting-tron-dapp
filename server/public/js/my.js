@@ -16,7 +16,8 @@ var serverTime = 0,
     myChart = null,
     socket = null,
     klinesStamp = 0,
-    bets = [];
+    bets = [],
+    historyBet = '';
 var trace = {
     categoryData: [],
     values: [],
@@ -24,6 +25,7 @@ var trace = {
 var utils = '';
 var server = 'http://159.65.88.52';
 var endpoint = '/api/bettings/active';
+var historyEndpoint = '/api/bettings/history';
 var contracrsEndpoint = '/api/contracts';
 var bettingContract;
 var tokenContract;
@@ -83,21 +85,79 @@ async function calcWin(index, price, direction, bet, time){
     $('.ifWinList').append(` <li>You win ${win/100} MOOD if price ${dir} ${price} at ${new Date(time*1000).toISOString().replace(/([^T]+)T([^\.]+).*/g, '$1 $2')}</li>`)
     //console.log(index);
 }
+function getFormattedDate(ts) {
+    var date = new Date(ts * 1000);
+
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var min = date.getMinutes();
+    var sec = date.getSeconds();
+
+    month = (month < 10 ? "0" : "") + month;
+    day = (day < 10 ? "0" : "") + day;
+    hour = (hour < 10 ? "0" : "") + hour;
+    min = (min < 10 ? "0" : "") + min;
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var str =  month + "-" + day + " at " +  hour + ":" + min;
+
+    /*alert(str);*/
+
+    return str;
+}
+async function responseHistory(json, value) {
+    if (historyBet == json + value && historyBet !=''){
+        return;
+    }
+    _json = json;
+
+
+    json = JSON.parse(json);
+
+
+    $('#historyList').html('');
+    let html = '';
+    json.sort(function(b,a){return +a.tx - +b.tx});
+    for (let i = 0; i < json.length; i++) {
+        let status = 'Past';
+        if (json[i].ended == false && json[i].endBetAccept == false)
+            status = 'Live';
+        if (json[i].ended == false && json[i].endBetAccept == true)
+            status = 'Wait';
+        let id = +json[i].tx + +value;
+        let newBets = await bettingContract.getBetters(id).call({
+            shouldPollResponse: true,
+            callValue: 0
+        });
+
+        html += `
+            <tr>
+                <td>${getFormattedDate(+json[i].startTime)} (${status})</td>
+                <td><img class='arrow-history-up' src="/img/up.png">
+                    <a href="#">${newBets.upCount} / ${newBets.downCount}</a>
+                <img class='arrow-history-down' src="/img/down.png"></td>
+                <td> <a href="#">VIEW</a></td>
+            </tr>
+            `;
+
+    }
+
+    $('#historyList').append(html);
+    if (html != ''){
+        historyBet = _json + value;
+    }
+}
+
 async function rebuildHistory(value){
-    if (value == 0){ currentAmount = 10000 }
-    if (value == 1){ currentAmount = 100000 }
-    if (value == 2){ currentAmount = 500000 }
-    if (value == 3){ currentAmount = 1000000 }
+   // alert(value);
     curentTxWithAmount = +curentTx + +value;
+    let interval = $('[name="time"]:checked').data('interval');
     $.ajax({
-        url: BettingStartedUrl,
+        url: `${server}${historyEndpoint}?duration=${interval}`,
         cache: false,
-        success: function(json){
-            for(let i = 0;i<json.length;i++){
-                if (json[i].result.bet == currentAmount) {
-                    console.log(json[i].result);
-                }
-            }
+        success: function(json) {
+            responseHistory(json, value);
         }
     });
 }
@@ -108,6 +168,8 @@ async function rebuildPeoples(value, refreshIfBetsChanged = false) {
     if (value == 2){ currentAmount = 5000 }
     if (value == 3){ currentAmount = 10000 }
     curentTxWithAmount = +curentTx + +value;
+
+    rebuildHistory($('[name="historyAmount"]:checked')[0].value);
 
     let newBets = await bettingContract.getBetters(curentTxWithAmount).call({
             shouldPollResponse: true,
@@ -122,8 +184,6 @@ async function rebuildPeoples(value, refreshIfBetsChanged = false) {
     for (let i = 0; i < newBets.addressUp.length; i++) {
         $('.address-list-increase').append(`<li>${newBets.addressUp[i]}</li>`);
     }
-    console.log('BETS::::');
-    console.log(newBets);
 
     if (refreshIfBetsChanged == true && newBets.upCount.toNumber() == bets.upCount.toNumber()
      && newBets.downCount.toNumber() == bets.downCount.toNumber())
@@ -144,7 +204,7 @@ async function rebuildPeoples(value, refreshIfBetsChanged = false) {
         success: function(json){
             $('.ifWinList').html('');
             $('.createBet').html('<p class="label">Create a bet</p>');
-            console.log(prices['1d'].tx);
+            //console.log(prices['1d'].tx);
             for(let i=0;i<json.length;i++){
                 if (json[i].result.addr != '0x'+tronWeb.defaultAddress.hex.replace('41',''))
                     continue;
@@ -201,7 +261,7 @@ async function createBet() {
         alert('ERROR: Token balance < Current Bet');
         return;
     }
-    await bettingContract.createBet(curentTxWithAmount, direction).call()
+
     let direction;
     if ($('.fall.active').length == 0) direction = 1; else direction = 2;
     $('.thirdPart .placeABet').hide(); //show "tanks for bet" label

@@ -376,3 +376,23 @@ body {
     font-size: 14px;
     text-align: center;
 }
+
+.arrow-history-up {
+    width: 12px;
+}
+.arrow-history-down {
+    width: 12px;
+    margin-top: -8px;
+}
+#historyList {
+    font-family: Muli;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 60px;
+    font-size: 16px;
+    width: 100%;
+}
+#historyList a {
+    color: white;
+    text-decoration: underline;
+}

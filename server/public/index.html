@@ -56,16 +56,16 @@
                 </div>
                 <div class="btn-group btn-group-toggle w-100" data-toggle="buttons" id="timeline">
                     <label class="btn btn-secondary active w-100">
-                        <input type="radio" name="time" value="86400000" autocomplete="off" checked>day
+                        <input type="radio" name="time" value="86400000" data-interval='1d' autocomplete="off" checked>day
                     </label>
                     <label class="btn btn-secondary w-100">
-                        <input type="radio" name="time" value="14400000" autocomplete="off">4 hours
+                        <input type="radio" name="time" value="14400000" data-interval='4h' autocomplete="off">4 hours
                     </label>
                     <label class="btn btn-secondary w-100">
-                        <input type="radio" name="time" value="3600000" autocomplete="off">1 hour
+                        <input type="radio" name="time" value="3600000" data-interval='1h' autocomplete="off">1 hour
                     </label>
                     <label class="btn btn-secondary w-100">
-                        <input type="radio" name="time" value="900000" autocomplete="off">15 min
+                        <input type="radio" name="time" value="900000" data-interval='15m' autocomplete="off">15 min
                     </label>
                 </div>
             </div>
@@ -217,20 +217,27 @@
                         <p class="chooseYouBet">
                             Choose your bet
                         </p>
-                        <div class="btn-group btn-group-toggle w-100 firstPart rightContent" data-toggle="buttons">
-                            <label class="btn btn-secondary active w-100" onclick=" rebuildHistory(0);">
-                                <input type="radio" class="historyAmount" name="historyAmount" value="0" autocomplete="off" checked="">100<br>MOOD
-                            </label>
-                            <label class="btn btn-secondary w-100" onclick=" rebuildHistory(1);">
-                                <input type="radio" class="historyAmount" name="historyAmount" value="1" autocomplete="off">1000<br>MOOD
-                            </label>
-                            <label class="btn btn-secondary w-100" onclick=" rebuildHistory(2);">
-                                <input type="radio" class="historyAmount" name="historyAmount" value="2" autocomplete="off">5000<br>MOOD
-                            </label>
-                            <label class="btn btn-secondary w-100" onclick=" rebuildHistory(3);">
-                                <input type="radio" class="historyAmount" name="historyAmount" value="3" autocomplete="off">10000<br>MOOD
-                            </label>
+                        <div class="firstPart rightContent">
+                            <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                                <label class="btn btn-secondary active w-100" onclick=" rebuildHistory(0);">
+                                    <input type="radio" class="historyAmount" name="historyAmount" value="0" autocomplete="off" checked="">100<br>MOOD
+                                </label>
+                                <label class="btn btn-secondary w-100" onclick=" rebuildHistory(1);">
+                                    <input type="radio" class="historyAmount" name="historyAmount" value="1" autocomplete="off">1000<br>MOOD
+                                </label>
+                                <label class="btn btn-secondary w-100" onclick=" rebuildHistory(2);">
+                                    <input type="radio" class="historyAmount" name="historyAmount" value="2" autocomplete="off">5000<br>MOOD
+                                </label>
+                                <label class="btn btn-secondary w-100" onclick=" rebuildHistory(3);">
+                                    <input type="radio" class="historyAmount" name="historyAmount" value="3" autocomplete="off">10000<br>MOOD
+                                </label>
+
+                            </div>
+                            <table id="historyList">
+
+                            </table>
                         </div>
+
                         <div class="rightContent" style="display: none">
                             <div class="createBet">
                                 <p class="label">Create a bet</p>
